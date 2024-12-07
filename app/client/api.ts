@@ -22,6 +22,7 @@ import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
+import { LYYApi } from "./platforms/lyynb";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -159,6 +160,9 @@ export class ClientApi {
         break;
       case ModelProvider.ChatGLM:
         this.llm = new ChatGLMApi();
+        break;
+      case ModelProvider.Lyy:
+        this.llm = new LYYApi();
         break;
       default:
         this.llm = new ChatGPTApi();
@@ -348,6 +352,8 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.XAI);
     case ServiceProvider.ChatGLM:
       return new ClientApi(ModelProvider.ChatGLM);
+    case ServiceProvider.Lyy:
+      return new ClientApi(ModelProvider.Lyy);
     default:
       return new ClientApi(ModelProvider.GPT);
   }

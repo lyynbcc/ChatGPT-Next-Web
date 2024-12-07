@@ -79,6 +79,8 @@ declare global {
       CHATGLM_URL?: string;
       CHATGLM_API_KEY?: string;
 
+      LYY_URL?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -129,7 +131,9 @@ export const getServerSideConfig = () => {
     if (customModels) customModels += ",";
     customModels += DEFAULT_MODELS.filter(
       (m) =>
-        (m.name.startsWith("gpt-4") || m.name.startsWith("chatgpt-4o") || m.name.startsWith("o1")) &&
+        (m.name.startsWith("gpt-4") ||
+          m.name.startsWith("chatgpt-4o") ||
+          m.name.startsWith("o1")) &&
         !m.name.startsWith("gpt-4o-mini"),
     )
       .map((m) => "-" + m.name)
@@ -226,6 +230,8 @@ export const getServerSideConfig = () => {
     isChatGLM,
     chatglmUrl: process.env.CHATGLM_URL,
     chatglmApiKey: getApiKey(process.env.CHATGLM_API_KEY),
+
+    lyyUrl: process.env.LYY_URL,
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,

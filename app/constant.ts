@@ -35,6 +35,9 @@ export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
+/** lyy */
+export const LYY_BASE_URL = "http://127.0.0.1:4523/m1/5579269-5257196-default";
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -65,6 +68,7 @@ export enum ApiPath {
   Artifacts = "/api/artifacts",
   XAI = "/api/xai",
   ChatGLM = "/api/chatglm",
+  Lyy = "/api/lyy",
 }
 
 export enum SlotID {
@@ -119,6 +123,7 @@ export enum ServiceProvider {
   Iflytek = "Iflytek",
   XAI = "XAI",
   ChatGLM = "ChatGLM",
+  Lyy = "Lyy",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -143,6 +148,7 @@ export enum ModelProvider {
   Iflytek = "Iflytek",
   XAI = "XAI",
   ChatGLM = "ChatGLM",
+  Lyy = "Lyy",
 }
 
 export const Stability = {
@@ -233,6 +239,11 @@ export const XAI = {
 export const ChatGLM = {
   ExampleEndpoint: CHATGLM_BASE_URL,
   ChatPath: "api/paas/v4/chat/completions",
+};
+
+export const Lyy = {
+  ExampleEndpoint: LYY_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -541,6 +552,17 @@ export const DEFAULT_MODELS = [
       sorted: 12,
     },
   })),
+  {
+    name: "lyy",
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "lyy",
+      providerName: "Lyy",
+      providerType: "lyy",
+      sorted: 13,
+    },
+  },
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;

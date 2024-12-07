@@ -15,6 +15,7 @@ import {
   IFLYTEK_BASE_URL,
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
+  LYY_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -50,6 +51,8 @@ const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
 
 const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
+
+const DEFAULT_LYY_URL = isApp ? LYY_BASE_URL : ApiPath.Lyy;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -115,6 +118,9 @@ const DEFAULT_ACCESS_STATE = {
   // chatglm
   chatglmUrl: DEFAULT_CHATGLM_URL,
   chatglmApiKey: "",
+
+  // lyy
+  lyyUrl: DEFAULT_LYY_URL,
 
   // server config
   needCode: true,
