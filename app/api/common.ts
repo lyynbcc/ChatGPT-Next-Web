@@ -95,6 +95,7 @@ export async function requestOpenai(req: NextRequest) {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
       [authHeaderName]: authValue,
+      access_token: req.headers.get("access_token") ?? "",
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
