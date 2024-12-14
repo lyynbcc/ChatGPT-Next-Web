@@ -2,11 +2,9 @@ import { ServiceProvider } from "@/app/constant";
 import { ModalConfigValidator, ModelConfig } from "../store";
 
 import Locale from "../locales";
-import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
 import { groupBy } from "lodash-es";
-import styles from "./model-config.module.scss";
 import { getModelProvider } from "../utils/model";
 
 export function ModelConfigList(props: {
@@ -49,7 +47,7 @@ export function ModelConfigList(props: {
           ))}
         </Select>
       </ListItem>
-      <ListItem
+      {/* <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}
       >
@@ -68,8 +66,8 @@ export function ModelConfigList(props: {
             );
           }}
         ></InputRange>
-      </ListItem>
-      <ListItem
+      </ListItem> */}
+      {/* <ListItem
         title={Locale.Settings.TopP.Title}
         subTitle={Locale.Settings.TopP.SubTitle}
       >
@@ -88,8 +86,8 @@ export function ModelConfigList(props: {
             );
           }}
         ></InputRange>
-      </ListItem>
-      <ListItem
+      </ListItem> */}
+      {/* <ListItem
         title={Locale.Settings.MaxTokens.Title}
         subTitle={Locale.Settings.MaxTokens.SubTitle}
       >
@@ -108,11 +106,11 @@ export function ModelConfigList(props: {
             )
           }
         ></input>
-      </ListItem>
+      </ListItem> */}
 
       {props.modelConfig?.providerName == ServiceProvider.Google ? null : (
         <>
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.PresencePenalty.Title}
             subTitle={Locale.Settings.PresencePenalty.SubTitle}
           >
@@ -132,9 +130,9 @@ export function ModelConfigList(props: {
                 );
               }}
             ></InputRange>
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.FrequencyPenalty.Title}
             subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
           >
@@ -154,9 +152,9 @@ export function ModelConfigList(props: {
                 );
               }}
             ></InputRange>
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.InjectSystemPrompts.Title}
             subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
           >
@@ -188,10 +186,10 @@ export function ModelConfigList(props: {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
         </>
       )}
-      <ListItem
+      {/* <ListItem
         title={Locale.Settings.HistoryCount.Title}
         subTitle={Locale.Settings.HistoryCount.SubTitle}
       >
@@ -267,7 +265,7 @@ export function ModelConfigList(props: {
               </option>
             ))}
         </Select>
-      </ListItem>
+      </ListItem> */}
     </>
   );
 }
