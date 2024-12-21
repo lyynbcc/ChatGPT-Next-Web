@@ -55,7 +55,7 @@ async function request(req: NextRequest) {
 
   let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Lyy, "");
 
-  let baseUrl = serverConfig.lyyUrl || LYY_BASE_URL;
+  let baseUrl = serverConfig.baseUrl || LYY_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -84,6 +84,7 @@ async function request(req: NextRequest) {
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
+      access_token: req.headers.get("access_token") ?? "",
     },
     method: req.method,
     body: req.body,
@@ -124,7 +125,7 @@ async function request(req: NextRequest) {
     }
   }
   try {
-    console.log(`[Lyy] fetch ${fetchUrl} [${req.method}]`);
+    console.log(`[Lyy] fetch ${fetchUrl} [${req.method}] `);
     const res = await fetch(fetchUrl, fetchOptions);
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);

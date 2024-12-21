@@ -36,7 +36,8 @@ export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
 /** lyy */
-export const LYY_BASE_URL = "http://127.0.0.1:4523/m1/5579269-5257196-default";
+export const LYY_BASE_URL =
+  process.env.BASE_URL ?? "http://127.0.0.1:4523/m1/5579269-5257196-default";
 
 export enum Path {
   Home = "/",
@@ -50,6 +51,10 @@ export enum Path {
   SdNew = "/sd-new",
   Artifacts = "/artifacts",
   SearchChat = "/search-chat",
+  Dashboard = "/dashboard",
+  Cuser = "/c-user",
+  Ccode = "/c-code",
+  CRecharge = "/recharge",
 }
 
 export enum ApiPath {
@@ -590,3 +595,10 @@ export const PLUGINS = [
 
 export const SAAS_CHAT_URL = "https://nextchat.dev/chat";
 export const SAAS_CHAT_UTM_URL = "https://nextchat.dev/chat?utm=github";
+
+export const LyyApi = {
+  // 使用记录
+  usageRecords: "/v1/call-record/pageList",
+  // 充值记录
+  payRecords: "/v1/recharge-record/pageList",
+};
