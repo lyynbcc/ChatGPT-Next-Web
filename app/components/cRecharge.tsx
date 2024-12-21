@@ -5,6 +5,7 @@ import { IconButton } from "./button";
 import { useNavigate } from "react-router-dom";
 import styles from "./cRecharge.module.scss";
 import { Path } from "../constant";
+import { getHeaders } from "../client/api";
 import CloseIcon from "../icons/close.svg";
 
 import Locale from "../locales";
@@ -19,6 +20,7 @@ export const CRecharge: React.FC = () => {
   const [loading, setLoading] = useState(false);
   //   const mock = "https://apifoxmock.com/m1/5579269-5257196-default";
   const mock = "";
+  const headers = getHeaders();
 
   const onFinish = async (values: { code: string }) => {
     setLoading(true);
@@ -27,9 +29,7 @@ export const CRecharge: React.FC = () => {
         `${mock}/v1/recharge-code/redeem`,
         {
           params: { code: values.code },
-          headers: {
-            access_token: localStorage.getItem("access_token"),
-          },
+          headers,
         },
       );
       if (response.data.code === 0) {
