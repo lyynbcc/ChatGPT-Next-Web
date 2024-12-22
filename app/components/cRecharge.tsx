@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import axios from "axios";
 import { IconButton } from "./button";
 import { useNavigate } from "react-router-dom";
 import styles from "./cRecharge.module.scss";
@@ -8,6 +7,9 @@ import { Path } from "../constant";
 import CloseIcon from "../icons/close.svg";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
+import { fetchLyyBackend } from "../client/lyy";
+import { ApiPath } from "../constant";
+
 interface RechargeResponse {
   code: number;
   content: string;
@@ -17,25 +19,20 @@ interface RechargeResponse {
 export const CRecharge: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  //   const mock = "https://apifoxmock.com/m1/5579269-5257196-default";
-  const mock = "";
   const accessStore = useAccessStore.getState();
+
   const onFinish = async (values: { code: string }) => {
     setLoading(true);
     try {
-      const response = await axios.get<RechargeResponse>(
-        `${mock}/v1/recharge-code/redeem`,
+      const result = await fetchLyyBackend(
+        `${ApiPath.Lyy}/v1/recharge-code/redeem`,
         {
-          params: { code: values.code },
-          headers: {
-            access_token: accessStore.accessCode,
-          },
+          code: values.code,
+          access_token: accessStore.accessCode,
         },
       );
-      if (response.data.code === 0) {
+      if (result) {
         message.success("充值成功!");
-      } else {
-        message.error(response.data.message);
       }
     } catch (error) {
       message.error("充值失败!");

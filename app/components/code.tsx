@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import axios from "axios";
+import { fetchLyyBackend } from "../client/lyy";
+import { ApiPath } from "../constant";
 import styles from "./code.module.scss";
 interface Request {
   accessToken: string;
@@ -19,15 +20,13 @@ export const Code: React.FC = () => {
   const onFinish = async (values: Request) => {
     setLoading(true);
     try {
-      const response = await axios.post<Response>(
-        mockUrl + "/api/recharge-code/generate",
+      const result = await fetchLyyBackend(
+        `${ApiPath.Lyy}/api/recharge-code/generate`,
         values,
       );
-      if (response.data.code === 0) {
-        setGeneratedCode(response.data.content);
+      if (result) {
+        setGeneratedCode(result.content);
         message.success("充值码生成成功!");
-      } else {
-        message.error(response.data.message);
       }
     } catch (error) {
       message.error("生成失败!");

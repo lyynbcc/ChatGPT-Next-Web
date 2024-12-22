@@ -1,26 +1,21 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import axios from "axios";
+import { fetchLyyBackend } from "../client/lyy";
+import { ApiPath } from "../constant";
 import styles from "./cUser.module.scss";
-// const mockUrl = "https://apifoxmock.com/m1/5579269-5257196-default";
-const mockUrl = "";
-interface Response {
-  code: number;
-  message: string;
-}
+
 export const CUser: React.FC = () => {
   const [loading, setLoading] = useState(false);
+
   const onFinish = async (values: { email: string; ceilPhoneNum?: string }) => {
     setLoading(true);
     try {
-      const response = await axios.post<Response>(
-        `${mockUrl}/api/license/gen`,
+      const result = await fetchLyyBackend(
+        `${ApiPath.Lyy}/api/license/gen`,
         values,
       );
-      if (response.data.code === 0) {
+      if (result) {
         message.success("用户名创建成功!");
-      } else {
-        message.error(response.data.message);
       }
     } catch (error) {
       message.error("用户名创建失败!");
