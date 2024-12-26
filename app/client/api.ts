@@ -1,9 +1,5 @@
 import { getClientConfig } from "../config/client";
-import {
-  ACCESS_CODE_PREFIX,
-  ModelProvider,
-  ServiceProvider,
-} from "../constant";
+import { ModelProvider, ServiceProvider } from "../constant";
 import {
   ChatMessageTool,
   ChatMessage,
@@ -253,6 +249,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isIflytek = modelConfig.providerName === ServiceProvider.Iflytek;
     const isXAI = modelConfig.providerName === ServiceProvider.XAI;
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
+    const isLyy = modelConfig.providerName === ServiceProvider.Lyy;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -286,6 +283,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       isIflytek,
       isXAI,
       isChatGLM,
+      isLyy,
       apiKey,
       isEnabledAccessControl,
     };
@@ -306,6 +304,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     isAzure,
     isAnthropic,
     isBaidu,
+    isLyy,
     apiKey,
     isEnabledAccessControl,
   } = getConfig();
@@ -316,15 +315,21 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   const bearerToken = getBearerToken(
     apiKey,
-    isAzure || isAnthropic || isGoogle,
+    isAzure || isAnthropic || isGoogle || isLyy,
   );
 
   if (bearerToken) {
     headers[authHeader] = bearerToken;
   } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
-    headers["Authorization"] = getBearerToken(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
-    );
+    // headers["Authorization"] = getBearerToken(
+    //   accessStore.accessCode,
+    //   true
+    // );
+
+    if (accessStore.token) {
+      headers["Authorization"] = `${accessStore.token}`;
+    }
+    headers["access_token"] = accessStore.accessCode;
   }
 
   return headers;

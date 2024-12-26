@@ -25,13 +25,20 @@ function parseApiKey(bearToken: string) {
 }
 
 export function auth(req: NextRequest, modelProvider: ModelProvider) {
+  console.log("[Auth] Request URL:", req.url);
+  console.log("[Auth] Request Method:", req.method);
+  console.log(
+    "[Auth] Request Headers:",
+    Object.fromEntries(req.headers.entries()),
+  );
+  console.log("innnnnnnnnnn");
+
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
   const { accessCode, apiKey } = parseApiKey(authToken);
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
-
   const serverConfig = getServerSideConfig();
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
@@ -46,12 +53,13 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
     };
   }
 
-  if (serverConfig.hideUserApiKey && !!apiKey) {
-    return {
-      error: true,
-      msg: "you are not allowed to access with your own api key",
-    };
-  }
+  // if (serverConfig.hideUserApiKey && !!apiKey) {
+  //   return {
+  //     error: true,
+  //     msg: "you are not allowed to access with your own api key",
+  //   };
+  // }
+  console.log("accessCode2", accessCode);
   req.headers.set("access_token", accessCode ?? "");
 
   // if user does not provide an api key, inject system api key

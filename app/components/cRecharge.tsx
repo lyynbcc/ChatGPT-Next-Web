@@ -25,7 +25,7 @@ export const CRecharge: React.FC = () => {
     setLoading(true);
     try {
       const result = await fetchLyyBackend(
-        `${ApiPath.Lyy}/v1/recharge-code/redeem`,
+        `${ApiPath.Lyy}/api/recharge-code/generate`,
         {
           code: values.code,
           access_token: accessStore.accessCode,
