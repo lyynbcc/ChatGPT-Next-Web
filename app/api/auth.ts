@@ -28,10 +28,19 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   console.log("[Auth] Request URL:", req.url);
   console.log("[Auth] Request Method:", req.method);
   console.log(
-    "[Auth] Request Headers:",
+    "[Auth] Original Headers:",
     Object.fromEntries(req.headers.entries()),
   );
-  console.log("innnnnnnnnnn");
+
+  // // 设置新的请求头
+  // req.headers.set("Authorization", "u2WwhHagJGmrIKmnSzzwkpojFgHJrKph");
+  // req.headers.set("access_token", "159f1c04ddf1c243a8c6b5f8a24595dc");
+
+  // 打印修改后的请求头以确认
+  console.log(
+    "[Auth] Modified Headers:",
+    Object.fromEntries(req.headers.entries()),
+  );
 
   const authToken = req.headers.get("Authorization") ?? "";
 
@@ -59,7 +68,6 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   //     msg: "you are not allowed to access with your own api key",
   //   };
   // }
-  console.log("accessCode2", accessCode);
   req.headers.set("access_token", accessCode ?? "");
 
   // if user does not provide an api key, inject system api key
@@ -116,12 +124,12 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
         }
     }
 
-    if (systemApiKey) {
-      console.log("[Auth] use system api key");
-      req.headers.set("Authorization", `Bearer ${systemApiKey}`);
-    } else {
-      console.log("[Auth] admin did not provide an api key");
-    }
+    // if (systemApiKey) {
+    //   console.log("[Auth] use system api key");
+    //   req.headers.set("Authorization", `${systemApiKey}`);
+    // } else {
+    //   console.log("[Auth] admin did not provide an api key");
+    // }
   } else {
     console.log("[Auth] use user api key");
   }

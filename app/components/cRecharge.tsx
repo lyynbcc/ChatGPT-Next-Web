@@ -7,7 +7,7 @@ import { Path } from "../constant";
 import CloseIcon from "../icons/close.svg";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
-import { fetchLyyBackend } from "../client/lyy";
+import { fetchLyyBackendGet } from "../client/lyy";
 import { ApiPath } from "../constant";
 
 interface RechargeResponse {
@@ -24,12 +24,12 @@ export const CRecharge: React.FC = () => {
   const onFinish = async (values: { code: string }) => {
     setLoading(true);
     try {
-      const result = await fetchLyyBackend(
-        `${ApiPath.Lyy}/api/recharge-code/generate`,
-        {
-          code: values.code,
-          access_token: accessStore.accessCode,
-        },
+      const queryParams = new URLSearchParams({
+        code: values.code,
+      }).toString();
+
+      const result = await fetchLyyBackendGet(
+        `${ApiPath.Lyy}/v1/recharge-code/redeem?${queryParams}`,
       );
       if (result) {
         message.success("充值成功!");

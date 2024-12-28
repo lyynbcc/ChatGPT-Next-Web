@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
+import { CopyOutlined } from "@ant-design/icons";
 import { fetchLyyBackend } from "../client/lyy";
 import { ApiPath } from "../constant";
 import styles from "./code.module.scss";
+
 interface Request {
   accessToken: string;
   amount: string;
 }
+
 interface Response {
   code: number;
   content: string;
   message: string;
 }
+
 export const Code: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
-  // const mockUrl = "https://apifoxmock.com/m1/5579269-5257196-default";
-  const mockUrl = "";
+
   const onFinish = async (values: Request) => {
     setLoading(true);
     try {
@@ -25,7 +28,7 @@ export const Code: React.FC = () => {
         values,
       );
       if (result) {
-        setGeneratedCode(result.content);
+        setGeneratedCode(result);
         message.success("充值码生成成功!");
       }
     } catch (error) {
@@ -34,6 +37,14 @@ export const Code: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(generatedCode)
+      .then(() => message.success("复制成功!"))
+      .catch(() => message.error("复制失败!"));
+  };
+
   return (
     <div className={styles.container}>
       <Form name="generate_code" onFinish={onFinish} layout="vertical">
@@ -58,8 +69,16 @@ export const Code: React.FC = () => {
         </Form.Item>
         {generatedCode && (
           <div className={styles.result}>
-            <h3>生成的充值码:</h3>
-            <div className={styles.code}>{generatedCode}</div>
+            <div className={styles.content}>
+              <span>生成的充值码: {generatedCode}</span>
+              <Button
+                icon={<CopyOutlined />}
+                onClick={copyToClipboard}
+                type="link"
+              >
+                复制
+              </Button>
+            </div>
           </div>
         )}
       </Form>

@@ -46,3 +46,15 @@ export const fetchUsageRecords = async (data: any = {}) => {
 export const fetchRechargeRecords = async (data: any = {}) => {
   return fetchLyyBackend(createFetchPath(LyyApi.payRecords), data);
 };
+
+export async function fetchLyyBackendGet(path: string) {
+  const headers = getHeaders(); // 获取动态的请求头
+  const response = await fetch(path, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      ...headers,
+    },
+  });
+  return response.json();
+}

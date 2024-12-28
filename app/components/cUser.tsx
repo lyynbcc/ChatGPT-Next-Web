@@ -4,9 +4,11 @@ import { fetchLyyBackend } from "../client/lyy";
 import { ApiPath } from "../constant";
 import { useAccessStore } from "../store";
 import styles from "./cUser.module.scss";
+import { CopyOutlined } from "@ant-design/icons";
 
 export const CUser: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [generatedContent, setGeneratedContent] = useState("");
   const accessStore = useAccessStore();
 
   const onFinish = async (values: {
@@ -16,7 +18,6 @@ export const CUser: React.FC = () => {
   }) => {
     setLoading(true);
     try {
-      // 保存 authorization 到 store
       if (values.authorization) {
         accessStore.updateToken(values.authorization);
       }
@@ -26,6 +27,7 @@ export const CUser: React.FC = () => {
         ceilPhoneNum: values.ceilPhoneNum,
       });
       if (result) {
+        setGeneratedContent(result);
         message.success("用户名创建成功!");
       }
     } catch (error) {
@@ -33,6 +35,13 @@ export const CUser: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(generatedContent)
+      .then(() => message.success("复制成功!"))
+      .catch(() => message.error("复制失败!"));
   };
 
   return (
@@ -56,13 +65,22 @@ export const CUser: React.FC = () => {
         <Form.Item
           label="邮箱"
           name="email"
-          rules={[{ required: true, message: "请输入您的邮箱!" }]}
+          rules={[
+            { required: true, message: "请输入您的邮箱!" },
+            { type: "email", message: "请输入有效的邮箱地址!" },
+          ]}
         >
-          <Input type="email" />
+          <Input type="email" placeholder="example@domain.com" />
         </Form.Item>
 
-        <Form.Item label="手机号" name="ceilPhoneNum">
-          <Input type="tel" />
+        <Form.Item
+          label="手机号"
+          name="ceilPhoneNum"
+          rules={[
+            { pattern: /^1[3-9]\d{9}$/, message: "请输入有效的中国手机号码!" },
+          ]}
+        >
+          <Input type="tel" placeholder="请输入11位手机号码" />
         </Form.Item>
 
         <Form.Item>
@@ -71,6 +89,21 @@ export const CUser: React.FC = () => {
           </Button>
         </Form.Item>
       </Form>
+
+      {generatedContent && (
+        <div className={styles.result}>
+          <div className={styles.content}>
+            {generatedContent}
+            <Button
+              icon={<CopyOutlined />}
+              onClick={copyToClipboard}
+              type="link"
+            >
+              复制
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

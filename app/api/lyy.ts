@@ -85,6 +85,7 @@ async function request(req: NextRequest) {
     headers: {
       "Content-Type": "application/json",
       access_token: req.headers.get("access_token") ?? "",
+      Authorization: req.headers.get("Authorization") ?? "",
     },
     method: req.method,
     body: req.body,
@@ -93,6 +94,7 @@ async function request(req: NextRequest) {
     duplex: "half",
     signal: controller.signal,
   };
+  console.log("fetchOptions", fetchOptions);
 
   // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {

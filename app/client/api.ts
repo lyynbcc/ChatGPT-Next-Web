@@ -317,6 +317,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     apiKey,
     isAzure || isAnthropic || isGoogle || isLyy,
   );
+  console.log("accessStore.token", bearerToken);
+  if (accessStore.token) {
+    headers["Authorization"] = `${accessStore.token}`;
+  }
+  headers["access_token"] = accessStore.accessCode;
 
   if (bearerToken) {
     headers[authHeader] = bearerToken;
