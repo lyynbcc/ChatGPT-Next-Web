@@ -335,3 +335,10 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ## 开源协议
 
 [MIT](https://opensource.org/license/mit/)
+
+build:   docker build --platform linux/amd64 -t lyy-chatweb:{版本号} .
+save:   docker save lyy-chatweb:{版本号} > lyy-{版本号}.tar
+上传 lyy-{{版本号}}.tar
+服务器上load: docker load -i lyy-{{版本号}}.tar
+stop删除原来的fe容器 docker stop fe
+启动：sh start_fe.sh {版本号}
