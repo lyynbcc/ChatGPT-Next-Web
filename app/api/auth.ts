@@ -68,7 +68,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
   //     msg: "you are not allowed to access with your own api key",
   //   };
   // }
-  req.headers.set("access_token", accessCode ?? "");
+  // req.headers.set("access_token", accessCode ?? "");
 
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
@@ -131,6 +131,7 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
     //   console.log("[Auth] admin did not provide an api key");
     // }
   } else {
+    // req.headers.set("access_token", '864ece8c5ec0f6c5d1b8ee5a' ?? "");
     console.log("[Auth] use user api key");
   }
 

@@ -31,11 +31,15 @@ export const CRecharge: React.FC = () => {
       const result = await fetchLyyBackendGet(
         `${ApiPath.Lyy}/v1/recharge-code/redeem?${queryParams}`,
       );
-      if (result) {
+
+      if (result.code === 0) {
         message.success("充值成功!");
+      } else {
+        message.error(result.message || "充值失败!");
       }
     } catch (error) {
-      message.error("充值失败!");
+      console.error("充值错误:", error);
+      message.error("充值失败，请稍后重试!");
     } finally {
       setLoading(false);
     }

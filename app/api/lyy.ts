@@ -1,14 +1,7 @@
 import { getServerSideConfig } from "@/app/config/server";
-import {
-  LYY_BASE_URL,
-  ApiPath,
-  ModelProvider,
-  ServiceProvider,
-} from "@/app/constant";
-import { prettyObject } from "@/app/utils/format";
+import { LYY_BASE_URL, ApiPath, ModelProvider } from "@/app/constant";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
-import { isModelAvailableInServer } from "@/app/utils/model";
 
 const serverConfig = getServerSideConfig();
 
@@ -16,7 +9,12 @@ export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Lyy Route] params ", params);
+  console.log("[Lyy] Request:", {
+    url: req.url,
+    method: req.method,
+    headers: Object.fromEntries(req.headers.entries()),
+    searchParams: Object.fromEntries(req.nextUrl.searchParams.entries()),
+  });
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
@@ -42,105 +40,58 @@ export async function handle(
   // }
 
   try {
-    const response = await request(req);
-    return response;
-  } catch (e) {
-    console.error("[Lyy] ", e);
-    return NextResponse.json(prettyObject(e));
-  }
-}
+    // 获取查询参数
+    const searchParams = req.nextUrl.searchParams;
+    const path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Lyy, "");
 
-async function request(req: NextRequest) {
-  const controller = new AbortController();
-
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Lyy, "");
-
-  let baseUrl = serverConfig.baseUrl || LYY_BASE_URL;
-
-  if (!baseUrl.startsWith("http")) {
-    baseUrl = `https://${baseUrl}`;
-  }
-
-  if (baseUrl.endsWith("/")) {
-    baseUrl = baseUrl.slice(0, -1);
-  }
-
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
-
-  const timeoutId = setTimeout(
-    () => {
-      controller.abort();
-    },
-    10 * 60 * 1000,
-  );
-
-  // const { access_token } = await getAccessToken(
-  //   serverConfig.baiduApiKey as string,
-  //   serverConfig.baiduSecretKey as string,
-  // );
-  const fetchUrl = `${baseUrl}${path}`;
-
-  const fetchOptions: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-      access_token: req.headers.get("access_token") ?? "",
-      Authorization: req.headers.get("Authorization") ?? "",
-    },
-    method: req.method,
-    body: req.body,
-    redirect: "manual",
-    // @ts-ignore
-    duplex: "half",
-    signal: controller.signal,
-  };
-  console.log("fetchOptions", fetchOptions);
-
-  // #1815 try to refuse some request to some models
-  if (serverConfig.customModels && req.body) {
-    try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
-      // not undefined and is false
-      if (
-        isModelAvailableInServer(
-          serverConfig.customModels,
-          jsonBody?.model as string,
-          ServiceProvider.Lyy as string,
-        )
-      ) {
-        return NextResponse.json(
-          {
-            error: true,
-            message: `you are not allowed to use ${jsonBody?.model} model`,
-          },
-          {
-            status: 403,
-          },
-        );
-      }
-    } catch (e) {
-      console.error(`[Lyy] filter`, e);
+    // 构建目标 URL
+    let baseUrl = LYY_BASE_URL;
+    if (!baseUrl.startsWith("http")) {
+      baseUrl = `https://${baseUrl}`;
     }
-  }
-  try {
-    console.log(`[Lyy] fetch ${fetchUrl} [${req.method}] `);
-    const res = await fetch(fetchUrl, fetchOptions);
-    // to prevent browser prompt for credentials
-    const newHeaders = new Headers(res.headers);
-    // newHeaders.delete("www-authenticate");
-    // to disable nginx buffering
-    // newHeaders.set("X-Accel-Buffering", "no");
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, -1);
+    }
 
-    return new Response(res.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: newHeaders,
+    const targetUrl = `${baseUrl}${path}${
+      searchParams.toString() ? "?" + searchParams.toString() : ""
+    }`;
+
+    console.log("[Lyy] Forwarding to:", targetUrl);
+
+    // 构建请求配置
+    const fetchOptions: RequestInit = {
+      method: req.method,
+      headers: {
+        Authorization: req.headers.get("Authorization") || "",
+        Access_token: req.headers.get("Access_token") || "",
+        "Content-Type": "application/json",
+      },
+    };
+
+    // 如果是 POST 请求，添加 body
+    if (req.method === "POST") {
+      const contentType = req.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
+        fetchOptions.body = JSON.stringify(await req.json());
+      } else {
+        fetchOptions.body = await req.text();
+      }
+    }
+
+    // 转发请求
+    const response = await fetch(targetUrl, fetchOptions);
+
+    // 返回响应
+    const data = await response.json();
+    return NextResponse.json(data, {
+      status: response.status,
     });
-  } finally {
-    clearTimeout(timeoutId);
+  } catch (e) {
+    console.error("[Lyy] Error:", e);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }
