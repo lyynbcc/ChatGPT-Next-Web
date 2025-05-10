@@ -57,6 +57,7 @@ const DEFAULT_LYY_URL = isApp ? LYY_BASE_URL : ApiPath.Lyy;
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
+  token: "", // 添加 token 字段
 
   provider: ServiceProvider.OpenAI,
 
@@ -143,6 +144,14 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().needCode;
+    },
+
+    updateToken(token: string) {
+      set((state) => ({ token }));
+    },
+
+    getToken() {
+      return get().token;
     },
 
     edgeVoiceName() {

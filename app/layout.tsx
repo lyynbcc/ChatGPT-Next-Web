@@ -7,6 +7,8 @@ import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getServerSideConfig } from "./config/server";
 import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+
 const serverConfig = getServerSideConfig();
 
 export const metadata: Metadata = {
@@ -49,7 +51,7 @@ export default function RootLayout({
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
       <body>
-        {children}
+        <AntdRegistry>{children}</AntdRegistry>
         {serverConfig?.isVercel && (
           <>
             <SpeedInsights />

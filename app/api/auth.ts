@@ -25,13 +25,29 @@ function parseApiKey(bearToken: string) {
 }
 
 export function auth(req: NextRequest, modelProvider: ModelProvider) {
+  console.log("[Auth] Request URL:", req.url);
+  console.log("[Auth] Request Method:", req.method);
+  console.log(
+    "[Auth] Original Headers:",
+    Object.fromEntries(req.headers.entries()),
+  );
+
+  // // 设置新的请求头
+  // req.headers.set("Authorization", "u2WwhHagJGmrIKmnSzzwkpojFgHJrKph");
+  // req.headers.set("access_token", "159f1c04ddf1c243a8c6b5f8a24595dc");
+
+  // 打印修改后的请求头以确认
+  console.log(
+    "[Auth] Modified Headers:",
+    Object.fromEntries(req.headers.entries()),
+  );
+
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
   const { accessCode, apiKey } = parseApiKey(authToken);
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
-
   const serverConfig = getServerSideConfig();
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
   console.log("[Auth] got access code:", accessCode);
@@ -46,13 +62,13 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
     };
   }
 
-  if (serverConfig.hideUserApiKey && !!apiKey) {
-    return {
-      error: true,
-      msg: "you are not allowed to access with your own api key",
-    };
-  }
-  req.headers.set("access_token", accessCode ?? "");
+  // if (serverConfig.hideUserApiKey && !!apiKey) {
+  //   return {
+  //     error: true,
+  //     msg: "you are not allowed to access with your own api key",
+  //   };
+  // }
+  // req.headers.set("access_token", accessCode ?? "");
 
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
@@ -108,13 +124,14 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
         }
     }
 
-    if (systemApiKey) {
-      console.log("[Auth] use system api key");
-      req.headers.set("Authorization", `Bearer ${systemApiKey}`);
-    } else {
-      console.log("[Auth] admin did not provide an api key");
-    }
+    // if (systemApiKey) {
+    //   console.log("[Auth] use system api key");
+    //   req.headers.set("Authorization", `${systemApiKey}`);
+    // } else {
+    //   console.log("[Auth] admin did not provide an api key");
+    // }
   } else {
+    // req.headers.set("access_token", '864ece8c5ec0f6c5d1b8ee5a' ?? "");
     console.log("[Auth] use user api key");
   }
 

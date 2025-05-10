@@ -1,21 +1,17 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
-import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 
 const isApp = !!getClientConfig()?.isApp;
 
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
-    Unauthorized: isApp
-      ? `😆 对话遇到了一些问题，不用慌:
-       \\ 1️⃣ 想要零配置开箱即用，[点击这里立刻开启对话 🚀](${SAAS_CHAT_UTM_URL})
-       \\ 2️⃣ 如果你想消耗自己的 OpenAI 资源，点击[这里](/#/settings)修改设置 ⚙️`
-      : `😆 对话遇到了一些问题，不用慌:
-       \ 1️⃣ 想要零配置开箱即用，[点击这里立刻开启对话 🚀](${SAAS_CHAT_UTM_URL})
-       \ 2️⃣ 如果你正在使用私有部署版本，点击[这里](/#/auth)输入访问秘钥 🔑
-       \ 3️⃣ 如果你想消耗自己的 OpenAI 资源，点击[这里](/#/settings)修改设置 ⚙️
-       `,
+    Unauthorized: `😊 欢迎使用 AI 助手，开始前需要简单设置：
+      \ 1️⃣ [点击这里设置访问密钥](/#/settings)，让我们成为好朋友 🔑
+      \ 2️⃣ [充值一下能量值](/#/recharge)，让我变得更强大 ⚡
+      \ 3️⃣ 之后可以[查看我们的充值消费记录](/#/dashboard) 📊
+      \ 
+      \ 准备好了吗？让我们开始愉快的对话吧！✨`,
   },
   Auth: {
     Return: "返回",
@@ -603,7 +599,7 @@ const cn = {
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
       Topic:
-        "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，不要加粗，如果没有主题，请直接返回“闲聊”",
+        "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，不要加粗，如果没有主题，请直接返回闲聊",
       Summarize:
         "简要总结一下对话内容，用作后续的上下文提示 prompt，控制在 200 字以内",
     },

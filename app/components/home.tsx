@@ -29,6 +29,7 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
+import Dashboard from "./dashboard/dashboard";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -63,6 +64,10 @@ const PluginPage = dynamic(async () => (await import("./plugin")).PluginPage, {
   loading: () => <Loading noLogo />,
 });
 
+const Cuser = dynamic(async () => (await import("./cUser")).CUser, {
+  loading: () => <Loading noLogo />,
+});
+
 const SearchChat = dynamic(
   async () => (await import("./search-chat")).SearchChatPage,
   {
@@ -71,6 +76,14 @@ const SearchChat = dynamic(
 );
 
 const Sd = dynamic(async () => (await import("./sd")).Sd, {
+  loading: () => <Loading noLogo />,
+});
+
+const Code = dynamic(async () => (await import("./code")).Code, {
+  loading: () => <Loading noLogo />,
+});
+
+const CRecharge = dynamic(async () => (await import("./cRecharge")).CRecharge, {
   loading: () => <Loading noLogo />,
 });
 
@@ -141,9 +154,17 @@ const loadAsyncGoogleFont = () => {
   document.head.appendChild(linkEl);
 };
 
-export function WindowContent(props: { children: React.ReactNode }) {
+export function WindowContent(props: {
+  children: React.ReactNode;
+  hasSidebar?: boolean;
+}) {
   return (
-    <div className={styles["window-content"]} id={SlotID.AppBody}>
+    <div
+      className={clsx(styles["window-content"], {
+        [styles["window-full"]]: !(props.hasSidebar ?? true),
+      })}
+      id={SlotID.AppBody}
+    >
       {props?.children}
     </div>
   );
@@ -157,6 +178,8 @@ function Screen() {
   const isAuth = location.pathname === Path.Auth;
   const isSd = location.pathname === Path.Sd;
   const isSdNew = location.pathname === Path.SdNew;
+  const isDashboard = location.pathname === Path.Dashboard;
+  const hasSidebar = !isDashboard;
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
@@ -179,12 +202,14 @@ function Screen() {
     if (isSdNew) return <Sd />;
     return (
       <>
-        <SideBar
-          className={clsx({
-            [styles["sidebar-show"]]: isHome,
-          })}
-        />
-        <WindowContent>
+        {hasSidebar && (
+          <SideBar
+            className={clsx({
+              [styles["sidebar-show"]]: isHome,
+            })}
+          />
+        )}
+        <WindowContent hasSidebar={hasSidebar}>
           <Routes>
             <Route path={Path.Home} element={<Chat />} />
             <Route path={Path.NewChat} element={<NewChat />} />
@@ -193,6 +218,10 @@ function Screen() {
             <Route path={Path.SearchChat} element={<SearchChat />} />
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
+            <Route path={Path.Dashboard} element={<Dashboard />} />
+            <Route path={Path.Cuser} element={<Cuser />} />
+            <Route path={Path.Ccode} element={<Code />} />
+            <Route path={Path.CRecharge} element={<CRecharge />} />
           </Routes>
         </WindowContent>
       </>

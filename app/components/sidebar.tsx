@@ -8,6 +8,7 @@ import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import DragIcon from "../icons/drag.svg";
+import WalletIcon from "../icons/wallet.svg";
 
 import Locale from "../locales";
 
@@ -300,6 +301,20 @@ export function SideBar(props: { className?: string }) {
                   icon={<SettingsIcon />}
                   shadow
                 />
+              </Link>
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <Link to={Path.CRecharge}>
+                <IconButton
+                  aria={Locale.Settings.Title}
+                  icon={<SettingsIcon />}
+                  shadow
+                />
+              </Link>
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <Link to={Path.Dashboard}>
+                <IconButton icon={<WalletIcon />} shadow />
               </Link>
             </div>
             {/* <div className={styles["sidebar-action"]}>
